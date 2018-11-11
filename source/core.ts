@@ -125,9 +125,16 @@ export class Handler<Err, Out> implements IEffect<Err, Out> {
  *
  * @param generator -- A generator that yields Effects.
  */
-export function run<Err, Ret, Out>(
-  generator: Generator<Nullable<Out>, Err, IEffect<Err, Out>, Ret>
+export function run<Err, Ret, Out, Args extends any[]>(
+  gen: (...args: Args) => IterableIterator<IEffect<Err, Out>>,
+  ...args: Args
 ) {
+  const generator = gen(...args) as Generator<
+    Nullable<Out>,
+    Err,
+    IEffect<Err, Out>,
+    Ret
+  >;
   return new Promise<Ret>((resolve, reject) => {
     function next(value: Nullable<Out>) {
       try {
