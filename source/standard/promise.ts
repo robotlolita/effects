@@ -27,13 +27,13 @@ export class PromiseEffect {
    *
    * If the promise fails, the *entire routine* fails.
    *
-   * @param {Promise<Out, Err>} promise -- the promise computation to run.
-   * @return {Handler<Err, Out>} an effect handler for the promise.
+   * @param promise -- the promise computation to run.
+   * @return an effect handler for the promise.
    */
-  await(promise) {
-    new Handler(k => {
+  await<Out>(promise: Promise<Out>) {
+    return new Handler(k => {
       promise.then(value => k(null, value), error => k(error, null));
-    });
+    }, `promise.await`);
   }
 }
 

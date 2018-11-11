@@ -10,5 +10,5 @@
 export * from "./core";
 export * from "./standard";
 
-import * as folktale from "./folktale";
-export { folktale };
+// import * as folktale from "./folktale";
+// export { folktale };
