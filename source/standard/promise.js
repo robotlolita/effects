@@ -18,7 +18,7 @@ import { Handler } from "../core";
  * promises as usual, but this does not affect the Effect-based
  * routine.
  */
-class PromiseEffect {
+export class PromiseEffect {
   /**
    * Awaits the result of the given promise.
    *
