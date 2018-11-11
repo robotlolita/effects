@@ -42,7 +42,7 @@ type GeneratorResult<O, R> =
 /**
  * The interface that effect handlers should implement.
  */
-interface IEffect<Err, Out> {
+export interface IEffect<Err, Out> {
   /**
    * Runs the effect, passing its completion value to the continuation.
    */
