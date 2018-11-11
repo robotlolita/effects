@@ -7,5 +7,18 @@
 //
 //----------------------------------------------------------------------
 
-export * from "./core";
-export * from "./standard";
+import { Handler } from "../core";
+
+/**
+ * An effect algebra for random number generation.
+ */
+export class RandomEffect {
+  /**
+   * Returns a random number between [0, 1).
+   */
+  random() {
+    return new Handler<void, number>(k => k(null, Math.random()));
+  }
+}
+
+export const random = new RandomEffect();

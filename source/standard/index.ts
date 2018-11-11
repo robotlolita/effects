@@ -8,3 +8,5 @@
 //----------------------------------------------------------------------
 
 export * from "./promise";
+export * from "./time";
+export * from "./random";

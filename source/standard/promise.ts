@@ -10,7 +10,7 @@
 import { Handler } from "../core";
 
 /**
- * A handler for Promise-based effects.
+ * An effect algebra for Promises.
  *
  * This allows running Promise-based computations directly in the
  * generalised Effect-based routines. Errors thrown *within* the
