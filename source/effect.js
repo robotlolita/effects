@@ -31,6 +31,12 @@ function effect(id, cases) {
         result[`${id}.${k}`] = f;
       }
       return result;
+    },
+
+    setDefaultHandler(handlers) {
+      for (const [k, f] of Object.entries(handlers)) {
+        Object.defineProperty(namespace[k], "runEffect", { value: f });
+      }
     }
   };
 

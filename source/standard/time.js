@@ -26,4 +26,6 @@ const defaultTime = time.makeHandler({
   }
 });
 
+TimeEffect.setDefaultHandler(defaultTime);
+
 module.exports = { time, TimeEffect, defaultTime };

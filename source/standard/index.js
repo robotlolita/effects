@@ -10,5 +10,6 @@
 module.exports = {
   ...require("./promise"),
   ...require("./random"),
-  ...require("./time")
+  ...require("./time"),
+  ...require("./state")
 };

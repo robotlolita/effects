@@ -26,4 +26,6 @@ const defaultPromise = promise.makeHandler({
   }
 });
 
+PromiseAlgebra.setDefaultHandler(defaultPromise);
+
 module.exports = { promise, PromiseAlgebra, defaultPromise };

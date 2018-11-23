@@ -29,4 +29,6 @@ const defaultRandom = random.makeHandler({
   }
 });
 
+RandomEffect.setDefaultHandler(defaultRandom);
+
 module.exports = { random, RandomEffect, defaultRandom };

@@ -29,6 +29,9 @@ function runEffect(handlers, effect, k) {
 
   if (handler != null) {
     handler(effect, k);
+  } else if (effect.runEffect) {
+    const runEffect = effect.runEffect;
+    runEffect(effect, k);
   } else {
     throw new Error(`No handler defined for ${id}`);
   }
