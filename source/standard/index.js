@@ -7,5 +7,8 @@
 //
 //----------------------------------------------------------------------
 
-export * from "./core";
-export * from "./standard";
+module.exports = {
+  ...require("./promise"),
+  ...require("./random"),
+  ...require("./time")
+};

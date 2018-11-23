@@ -7,22 +7,23 @@
 //
 //----------------------------------------------------------------------
 
-import { Handler } from "../core";
+const { effect } = require("../effect");
 
-/**
- * An effect algebra for time.
- */
-export class TimeEffect {
-  /**
-   * Returns the current date.
-   *
-   * In the default handler, returns the date from the system.
-   */
+const TimeEffect = effect("@builtin:Time", {
+  Now: []
+});
+
+const time = {
   now() {
-    return new Handler<void, Date>(k => {
-      k(null, new Date());
-    });
-  }
-}
+    return new TimeEffect.now();
+  },
+  makeHandler: TimeEffect.makeHandler
+};
 
-export const time = new TimeEffect();
+const defaultTime = time.makeHandler({
+  now(_, k) {
+    k(new Date());
+  }
+});
+
+module.exports = { time, TimeEffect, defaultTime };

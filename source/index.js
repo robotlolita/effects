@@ -7,6 +7,8 @@
 //
 //----------------------------------------------------------------------
 
-export * from "./promise";
-export * from "./time";
-export * from "./random";
+module.exports = {
+  ...require("./effect"),
+  ...require("./runner"),
+  ...require("./standard")
+};
