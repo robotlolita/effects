@@ -65,7 +65,7 @@ const io = {
   },
 
   writeLine(text) {
-    return this.write(text + "\n");
+    return io.write(text + "\n");
   },
 
   writeError(text) {
@@ -73,7 +73,7 @@ const io = {
   },
 
   writeErrorLine(text) {
-    return this.writeError(text + "\n");
+    return io.writeError(text + "\n");
   },
 
   read() {

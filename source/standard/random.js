@@ -26,7 +26,7 @@ const random = {
     return Random.Random();
   },
   *randomInt(start, stop) {
-    return Math.floor(start + (stop - start) * (yield this.random()));
+    return Math.floor(start + (stop - start) * (yield random.random()));
   }
 };
 
