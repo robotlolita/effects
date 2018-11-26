@@ -24,7 +24,7 @@ const random = {
 };
 
 const defaultRandom = random.makeHandler({
-  random(_, k) {
+  Random(_, k) {
     k(Math.random());
   }
 });

@@ -34,7 +34,7 @@ const state = {
   }
 };
 
-const defaultState = {
+const defaultState = StateAlgebra.makeHandler({
   Read(box, k) {
     k(box.value);
   },
@@ -43,7 +43,7 @@ const defaultState = {
     box.value = value;
     k();
   }
-};
+});
 
 StateAlgebra.setDefaultHandler(defaultState);
 

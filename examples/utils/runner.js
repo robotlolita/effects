@@ -21,4 +21,4 @@ async function runMain(program) {
   }
 }
 
-module.exports = { runCapturing, runMain };
+module.exports = { runCapturing, runMain, run };

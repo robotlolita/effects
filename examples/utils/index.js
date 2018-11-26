@@ -1,4 +1,5 @@
 module.exports = {
   ...require("./capture-io"),
-  ...require("./runner")
+  ...require("./runner"),
+  ...require("./standard-effect")
 };
