@@ -9,22 +9,22 @@
 
 const { effect } = require("../effect");
 
-const Time = effect("@builtin:Time", {
-  Now: []
-});
+const Time = effect(
+  "@builtin:Time",
+  {
+    Now: []
+  },
+  {
+    Now(_, k) {
+      k(null, new Date());
+    }
+  }
+);
 
 const time = {
   now() {
-    return new Time.Now();
+    return Time.Now();
   }
 };
 
-const defaultTime = Time.makeHandler({
-  Now(_, k) {
-    k(null, new Date());
-  }
-});
-
-Time.setDefaultHandler(defaultTime);
-
-module.exports = { time, Time, defaultTime };
+module.exports = { time, Time };

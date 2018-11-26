@@ -7,6 +7,8 @@
 //
 //----------------------------------------------------------------------
 
+const { handlers } = require("./handler");
+
 class OneShotViolationError extends Error {
   constructor(effect) {
     super(
@@ -23,15 +25,15 @@ class ContinuedWithErrorAndSuccess extends Error {
   }
 }
 
-function runEffect(handlers, effect, k) {
+function runEffect(handler, effect, k) {
   const id = effect["@folktale/effect-id"];
-  const handler = handlers[id];
+  const fn = handler.maybeGet(id);
 
-  if (handler != null) {
-    handler(effect, k);
+  if (fn != null) {
+    fn(effect, k, handler);
   } else if (effect.runEffect) {
-    const runEffect = effect.runEffect;
-    runEffect(effect, k);
+    const fn = effect.runEffect;
+    fn(effect, k, handler);
   } else {
     throw new Error(`No handler defined for ${id}`);
   }

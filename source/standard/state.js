@@ -9,10 +9,23 @@
 
 const { effect } = require("../effect");
 
-const StateAlgebra = effect("@builtin:State", {
-  Read: ["box"],
-  Update: ["box", "value"]
-});
+const State = effect(
+  "@builtin:State",
+  {
+    Read: ["box"],
+    Update: ["box", "value"]
+  },
+  {
+    Read(box, k) {
+      k(box.value);
+    },
+
+    Update(box, value, k) {
+      box.value = value;
+      k();
+    }
+  }
+);
 
 class Ref {
   constructor(value) {
@@ -22,11 +35,11 @@ class Ref {
 
 const state = {
   read(box) {
-    return new StateAlgebra.Read(box);
+    return State.Read(box);
   },
 
   update(box, value) {
-    return new StateAlgebra.Update(box, value);
+    return State.Update(box, value);
   },
 
   box(value) {
@@ -34,17 +47,4 @@ const state = {
   }
 };
 
-const defaultState = StateAlgebra.makeHandler({
-  Read(box, k) {
-    k(box.value);
-  },
-
-  Update(box, value, k) {
-    box.value = value;
-    k();
-  }
-});
-
-StateAlgebra.setDefaultHandler(defaultState);
-
-module.exports = { StateAlgebra, state, defaultState, Ref };
+module.exports = { State, state, Ref };

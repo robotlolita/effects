@@ -9,25 +9,25 @@
 
 const { effect } = require("../effect");
 
-const Random = effect("@builtin:Random", {
-  Random: []
-});
+const Random = effect(
+  "@builtin:Random",
+  {
+    Random: []
+  },
+  {
+    Random(_, k) {
+      k(null, Math.random());
+    }
+  }
+);
 
 const random = {
   random() {
-    return new Random.Random();
+    return Random.Random();
   },
   *randomInt(start, stop) {
     return Math.floor(start + (stop - start) * (yield this.random()));
   }
 };
 
-const defaultRandom = Random.makeHandler({
-  Random(_, k) {
-    k(null, Math.random());
-  }
-});
-
-Random.setDefaultHandler(defaultRandom);
-
-module.exports = { random, Random, defaultRandom };
+module.exports = { random, Random };

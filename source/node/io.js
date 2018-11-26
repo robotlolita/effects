@@ -1,10 +1,14 @@
 const { effect } = require("../effect");
 const readline = require("readline");
 
-const IO = effect("@node:IO", {
-  Write: ["stream", "text"],
-  Read: []
-});
+class UnknownStreamError extends Error {
+  constructor(stream) {
+    super(`Unknown stream ${stream}`);
+    this.stream = stream;
+  }
+}
+
+class SignalInterrupt extends Error {}
 
 class IOStream {}
 class Stdout extends IOStream {}
@@ -15,53 +19,49 @@ const streams = {
   error: new Stderr()
 };
 
-class UnknownStreamError extends Error {
-  constructor(stream) {
-    super(`Unknown stream ${stream}`);
-    this.stream = stream;
-  }
-}
-
-class SignalInterrupt extends Error {}
-
-const defaultIO = IO.makeHandler({
-  Write({ stream, text }, k) {
-    if (stream === streams.output) {
-      process.stdout.write(text);
-      k(null, null);
-    } else if (stream === streams.error) {
-      process.stderr.write(text);
-      k(null, null);
-    } else {
-      k(new UnknownStreamError(stream), null);
-    }
+const IO = effect(
+  "@node:IO",
+  {
+    Write: ["stream", "text"],
+    Read: []
   },
+  {
+    Write({ stream, text }, k) {
+      if (stream === streams.output) {
+        process.stdout.write(text);
+        k(null, null);
+      } else if (stream === streams.error) {
+        process.stderr.write(text);
+        k(null, null);
+      } else {
+        k(new UnknownStreamError(stream), null);
+      }
+    },
 
-  Read(_, k) {
-    const rl = readline.createInterface({
-      input: process.stdin,
-      output: process.stdout
-    });
+    Read(_, k) {
+      const rl = readline.createInterface({
+        input: process.stdin,
+        output: process.stdout
+      });
 
-    rl.once("line", text => {
-      rl.close();
-      k(null, text);
-    });
+      rl.once("line", text => {
+        rl.close();
+        k(null, text);
+      });
 
-    rl.once("SIGINT", () => {
-      rl.close();
-      k(new SignalInterrupt(), null);
-    });
+      rl.once("SIGINT", () => {
+        rl.close();
+        k(new SignalInterrupt(), null);
+      });
 
-    rl.prompt();
+      rl.prompt();
+    }
   }
-});
-
-IO.setDefaultHandler(defaultIO);
+);
 
 const io = {
   write(text) {
-    return new IO.Write(streams.output, text);
+    return IO.Write(streams.output, text);
   },
 
   writeLine(text) {
@@ -69,7 +69,7 @@ const io = {
   },
 
   writeError(text) {
-    return new IO.Write(streams.error, text);
+    return IO.Write(streams.error, text);
   },
 
   writeErrorLine(text) {
@@ -77,13 +77,12 @@ const io = {
   },
 
   read() {
-    return new IO.Read();
+    return IO.Read();
   }
 };
 
 module.exports = {
   IO,
-  defaultIO,
   streams,
   io,
   SignalInterrupt,

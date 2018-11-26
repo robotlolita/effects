@@ -1,5 +1,8 @@
 const { io } = require("../../source/node");
 const { random } = require("../../source/standard");
+const {
+  handlers: { empty }
+} = require("../../source");
 const { fixedRandom, run, runCapturing, runMain } = require("../utils");
 
 function* main() {
@@ -27,14 +30,8 @@ function* main() {
 
 runMain(async function() {
   console.log("\n== Default IO/Random");
-  await run({}, main);
+  await run(empty, main);
 
   console.log("\n== Captured IO/Fixed Random");
-  await runCapturing({ ...fixedRandom(0.5) }, main, [
-    "10",
-    "60",
-    "30",
-    "50",
-    "51"
-  ]);
+  await runCapturing(fixedRandom(0.5), main, ["10", "60", "30", "50", "51"]);
 });

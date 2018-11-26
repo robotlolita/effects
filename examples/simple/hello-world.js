@@ -1,4 +1,7 @@
 const { io } = require("../../source/node");
+const {
+  handlers: { empty }
+} = require("../../source");
 const { run, runCapturing, runMain } = require("../utils");
 
 function* main() {
@@ -7,8 +10,8 @@ function* main() {
 
 runMain(async function() {
   console.log("\n== Default IO");
-  await run({}, main);
+  await run(empty, main);
 
   console.log("\n== Captured IO");
-  await runCapturing({}, main);
+  await runCapturing(empty, main);
 });

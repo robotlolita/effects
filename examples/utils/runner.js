@@ -1,10 +1,13 @@
-const { run } = require("../../source");
+const {
+  run,
+  handlers: { combine }
+} = require("../../source");
 const { capturingIO } = require("./capture-io");
 
 async function runCapturing(handlers, effects, stdin = []) {
   const stderr = [];
   const stdout = [];
-  await run({ ...handlers, ...capturingIO(stdout, stderr, stdin) }, effects);
+  await run(combine([capturingIO(stdout, stderr, stdin), handlers]), effects);
   console.log("stdout ->", stdout);
   console.log("stderr ->", stderr);
   console.log("stdin ->", stdin);

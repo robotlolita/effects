@@ -7,6 +7,8 @@
 //
 //----------------------------------------------------------------------
 
+const { handlers } = require("./handler");
+
 class ArityMismatch extends Error {}
 
 /**
@@ -19,28 +21,20 @@ class ArityMismatch extends Error {}
  *       Write: ['string']
  *     })
  */
-function effect(id, cases) {
+function effect(id, cases, defaults = {}) {
+  const algebra = Object.create(null);
+
   const namespace = {
     toString() {
       return `<#Effect: ${id}>`;
     },
 
-    makeHandler(handlers) {
-      const result = {};
-      for (const [k, f] of Object.entries(handlers)) {
-        result[`${id}.${k}`] = f;
-        Object.defineProperty(f, "@folktale/effect-case", { value: k });
-      }
-      return result;
+    get algebra() {
+      return algebra;
     },
 
-    setDefaultHandler(handlers) {
-      for (const [id, f] of Object.entries(handlers)) {
-        const k = f["@folktale/effect-case"];
-        Object.defineProperty(namespace[k].prototype, "runEffect", {
-          value: f
-        });
-      }
+    makeHandler(cases) {
+      return handlers.fromAlgebra(algebra, cases);
     }
   };
 
@@ -65,7 +59,16 @@ function effect(id, cases) {
     Object.defineProperty(ctor.prototype, "@folktale/effect-id", {
       value: `${id}.${name}`
     });
-    Object.defineProperty(namespace, name, { value: ctor, enumerable: true });
+    if (name in defaults) {
+      Object.defineProperty(ctor.prototype, "runEffect", {
+        value: defaults[name]
+      });
+    }
+    Object.defineProperty(algebra, name, { value: ctor, enumerable: true });
+    Object.defineProperty(namespace, name, {
+      value: (...args) => new ctor(...args),
+      enumerable: true
+    });
   }
 
   return namespace;

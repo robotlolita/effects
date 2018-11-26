@@ -9,23 +9,22 @@
 
 const { effect } = require("../effect");
 
-const PromiseAlgebra = effect("@builtin:Promise", {
-  Await: ["promise"]
-});
+const Promise = effect(
+  "@builtin:Promise",
+  {
+    Await: ["promise"]
+  },
+  {
+    Await({ promise }, k) {
+      promise.then(value => k(null, value), error => k(error, null));
+    }
+  }
+);
 
 const promise = {
   await(promise) {
-    return new PromiseAlgebra.Await(promise);
-  },
-  makeHandler: PromiseAlgebra.makeHandler
+    return Promise.Await(promise);
+  }
 };
 
-const defaultPromise = promise.makeHandler({
-  Await({ promise }, k) {
-    promise.then(value => k(null, value), error => k(error, null));
-  }
-});
-
-PromiseAlgebra.setDefaultHandler(defaultPromise);
-
-module.exports = { promise, PromiseAlgebra, defaultPromise };
+module.exports = { promise, Promise };
