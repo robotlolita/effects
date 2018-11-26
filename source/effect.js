@@ -29,13 +29,17 @@ function effect(id, cases) {
       const result = {};
       for (const [k, f] of Object.entries(handlers)) {
         result[`${id}.${k}`] = f;
+        Object.defineProperty(f, "@folktale/effect-case", { value: k });
       }
       return result;
     },
 
     setDefaultHandler(handlers) {
-      for (const [k, f] of Object.entries(handlers)) {
-        Object.defineProperty(namespace[k], "runEffect", { value: f });
+      for (const [id, f] of Object.entries(handlers)) {
+        const k = f["@folktale/effect-case"];
+        Object.defineProperty(namespace[k].prototype, "runEffect", {
+          value: f
+        });
       }
     }
   };
@@ -61,7 +65,7 @@ function effect(id, cases) {
     Object.defineProperty(ctor.prototype, "@folktale/effect-id", {
       value: `${id}.${name}`
     });
-    Object.defineProperty(namespace, name, ctor);
+    Object.defineProperty(namespace, name, { value: ctor, enumerable: true });
   }
 
   return namespace;

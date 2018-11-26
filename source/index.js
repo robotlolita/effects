@@ -9,6 +9,5 @@
 
 module.exports = {
   ...require("./effect"),
-  ...require("./runner"),
-  ...require("./standard")
+  ...require("./runner")
 };
