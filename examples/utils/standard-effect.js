@@ -1,4 +1,4 @@
-const { Time } = require("../../source/standard");
+const { Time, Random } = require("../../source/standard");
 
 const fixedTime = date =>
   Time.makeHandler({
@@ -7,4 +7,16 @@ const fixedTime = date =>
     }
   });
 
-module.exports = { fixedTime };
+const fixedRandom = number => {
+  if (number < 0 || number >= 1) {
+    throw new Error(`Random number must be in the range [0, 1)`);
+  }
+
+  return Random.makeHandler({
+    Random(_, k) {
+      k(null, number);
+    }
+  });
+};
+
+module.exports = { fixedTime, fixedRandom };

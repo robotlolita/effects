@@ -44,14 +44,16 @@ const defaultIO = IO.makeHandler({
     });
 
     rl.once("line", text => {
-      k(null, text);
       rl.close();
+      k(null, text);
     });
 
     rl.once("SIGINT", () => {
-      k(new SignalInterrupt(), null);
       rl.close();
+      k(new SignalInterrupt(), null);
     });
+
+    rl.prompt();
   }
 });
 

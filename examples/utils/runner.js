@@ -1,8 +1,7 @@
 const { run } = require("../../source");
 const { capturingIO } = require("./capture-io");
 
-async function runCapturing(handlers, effects) {
-  const stdin = [];
+async function runCapturing(handlers, effects, stdin = []) {
   const stderr = [];
   const stdout = [];
   await run({ ...handlers, ...capturingIO(stdout, stderr, stdin) }, effects);
