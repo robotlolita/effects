@@ -45,12 +45,20 @@ function run(handlers, gen) {
   return new Promise((resolve, reject) => {
     function next(value) {
       try {
-        const result = generator.next(value);
+        while (true) {
+          let result = generator.next(value);
 
-        if (result.done) {
-          resolve(result.value);
-        } else {
-          handleEffect(result.value);
+          if (result.done) {
+            resolve(result.value);
+            break;
+          } else {
+            const status = handleEffect(result.value);
+            if (status.continue) {
+              result = value;
+            } else {
+              break;
+            }
+          }
         }
       } catch (error) {
         reject(error);
@@ -59,6 +67,9 @@ function run(handlers, gen) {
 
     function handleEffect(effect) {
       let called = false;
+      let returned = false;
+      let value = null;
+      let thrown = false;
 
       runEffect(handlers, effect, (error, result) => {
         if (called) {
@@ -72,11 +83,23 @@ function run(handlers, gen) {
               new ContinuedWithErrorAndSuccess(error, result, effect)
             );
           }
+          thrown = true;
           throwAndContinue(error);
         } else {
-          next(result);
+          if (returned) {
+            next(result);
+          } else {
+            value = result;
+          }
         }
       });
+
+      returned = true;
+      if (thrown) {
+        return { continue: false, value: null };
+      } else {
+        return { continue: called, value };
+      }
     }
 
     function throwAndContinue(error) {
