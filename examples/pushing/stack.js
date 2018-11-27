@@ -3,7 +3,7 @@ const { handlers, effect } = require("../../source");
 const { run, runMain, capturingIO } = require("../utils");
 
 function* main() {
-  for (let i = 0; i < 2 ** 16; ++i) {
+  for (let i = 0; i < 2 ** 20; ++i) {
     yield io.writeLine("text");
   }
 }
